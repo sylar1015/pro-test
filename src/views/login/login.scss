@@ -1,0 +1,36 @@
+@import "~antd/dist/antd.css";
+
+body {
+    background-color: #001529;
+}
+
+.my-login-form {
+    display: flex;
+    width: 300px;
+    height: 100vh;
+    margin: auto;
+    align-items: center;
+
+    >div { width: 100% };
+}
+
+.my-login-form-header {
+    height: 56px;
+    line-height: 56px;
+    color: #fff;
+    .my-title {
+        font-size: 16px;
+        float: left;
+        color: #fff;
+    }
+
+    span {
+        font-size: 12px;
+        float: right;
+        opacity: .3;
+    }
+}
+
+.my-login-form-content {
+}
+
