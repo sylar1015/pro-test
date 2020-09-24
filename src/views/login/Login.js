@@ -47,7 +47,7 @@ class LoginForm extends React.Component {
         this.code_button_text = ['获取验证码', '发送中', '60S', '重新获取'];
         this.state = {
             username:'',
-            code_button_disabled:true,
+            code_button_click_disabled:true,
             code_button_loading:false,
             code_button_text: this.code_button_text[0]
         };
@@ -60,13 +60,18 @@ class LoginForm extends React.Component {
 
         this.getCode = this.getCode.bind(this);
         this.onInputChange = this.onInputChange.bind(this);
+        this.countDown = this.countDown.bind(this);
     }
 
     getCode() {
 
+        if (this.state.code_button_click_disabled) {
+            return false;
+        }
+
         this.setState({
             code_button_text:this.code_button_text[1],
-            code_button_loading:true
+            code_button_loading:true,
         });
 
         const payload = {
@@ -75,14 +80,13 @@ class LoginForm extends React.Component {
         };
 
         GetCode(payload).then(response => {
-            this.setState({
-                code_button_text:this.code_button_text[2],
-                code_button_loading:false
-            });
+
+            this.countDown();
         }).catch(error => {
             this.setState({
                 code_button_text:this.code_button_text[3],
-                code_button_loading:false
+                code_button_loading:false,
+                code_button_click_disabled:false
             });
             console.log(error);
         });
@@ -109,16 +113,52 @@ class LoginForm extends React.Component {
         this.props.changeFormType('register');
     }
 
+    /*
+    * 输入内容变更
+    * */
     onInputChange(e) {
         const value = e.target.value;
         const disabled = !value;
 
-        this.setState({username:value, code_button_disabled:disabled});
+        this.setState({username:value, code_button_click_disabled:disabled});
+    }
+
+    /*
+    * 倒计时
+    * */
+    countDown() {
+
+        let sec  = 60;
+        let timer = null;
+
+        /*
+        * setInterval / clearInterval 不间断执行
+        * setTimeout / clearTimeout 只执行一次
+        *  */
+
+        this.setState({
+            code_button_text: `${sec}S`,
+            code_button_loading:false,
+            code_button_click_disabled:true
+        });
+
+        timer = setInterval(()=>{
+            sec -= 1;
+            this.setState({code_button_text: `${sec}S`});
+
+            if (sec == 0) {
+                clearInterval(timer);
+                this.setState({
+                    code_button_text: this.code_button_text[3],
+                    code_button_click_disabled: false
+                })
+            }
+        }, 1000)
     }
 
     render() {
 
-        const {username, code_button_disabled, code_button_loading, code_button_text} = this.state;
+        const {username, code_button_loading, code_button_text} = this.state;
 
         return (
             <div className="my-login-form">
@@ -162,7 +202,7 @@ class LoginForm extends React.Component {
                                     </Col>
                                     <Col span={9}>
                                         <Button type='danger' loading={code_button_loading}
-                                                block disabled={code_button_disabled} onClick={this.getCode}>{code_button_text}</Button>
+                                                block onClick={this.getCode}>{code_button_text}</Button>
                                     </Col>
                                 </Row>
                             </Form.Item>
