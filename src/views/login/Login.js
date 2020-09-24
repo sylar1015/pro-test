@@ -3,12 +3,12 @@ import React from "react";
 //css
 import './login.scss'
 //antd
-import {Form, Input, Button, Row, Col} from "antd";
-import { UserOutlined, LockOutlined  } from '@ant-design/icons'
+import {Form, Input, Button, Row, Col, message} from "antd";
+import { UserOutlined, LockOutlined, PoweroffOutlined } from '@ant-design/icons'
 //utils
 import {validate_password} from "../../utils/validate";
 //api
-import {Login} from "../../api/account";
+import {Login, GetCode} from "../../api/account";
 
 class LoginComponent extends React.Component {
 
@@ -43,19 +43,61 @@ class LoginForm extends React.Component {
 
     constructor (props) {
         super(props);
-        this.state = {};
+
+        this.code_button_text = ['获取验证码', '发送中', '60S', '重新获取'];
+        this.state = {
+            username:'',
+            code_button_disabled:true,
+            code_button_loading:false,
+            code_button_text: this.code_button_text[0]
+        };
+
+
 
         this.onFinish = this.onFinish.bind(this);
         this.onFinishFailed = this.onFinishFailed.bind(this);
         this.onChangeFormType = this.onChangeFormType.bind(this);
+
+        this.getCode = this.getCode.bind(this);
+        this.onInputChange = this.onInputChange.bind(this);
+    }
+
+    getCode() {
+
+        this.setState({
+            code_button_text:this.code_button_text[1],
+            code_button_loading:true
+        });
+
+        const payload = {
+            username: this.state.username,
+            module: 'login'
+        };
+
+        GetCode(payload).then(response => {
+            this.setState({
+                code_button_text:this.code_button_text[2],
+                code_button_loading:false
+            });
+        }).catch(error => {
+            this.setState({
+                code_button_text:this.code_button_text[3],
+                code_button_loading:false
+            });
+            console.log(error);
+        });
+    }
+
+    componentDidMount() {
+        //console.log(process.env.REACT_APP_API)
     }
 
     onFinish(values) {
-        console.log("onFinish", values);
+        //console.log("onFinish", values);
         Login(values).then(response => {
             console(response);
         }).catch(error => {
-
+            console.log(error);
         });
     }
 
@@ -67,7 +109,17 @@ class LoginForm extends React.Component {
         this.props.changeFormType('register');
     }
 
+    onInputChange(e) {
+        const value = e.target.value;
+        const disabled = !value;
+
+        this.setState({username:value, code_button_disabled:disabled});
+    }
+
     render() {
+
+        const {username, code_button_disabled, code_button_loading, code_button_text} = this.state;
+
         return (
             <div className="my-login-form">
                 <div>
@@ -81,7 +133,7 @@ class LoginForm extends React.Component {
                             onFinish={this.onFinish}
                             onFinishFailed={this.onFinishFailed}>
                             <Form.Item name='username' rules={[{required: true, message:'Please Input Username'}]}>
-                                <Input prefix={<UserOutlined className="site-form-item-icon" />} placeholder='账号'/>
+                                <Input value={username} onChange={this.onInputChange} prefix={<UserOutlined className="site-form-item-icon" />} placeholder='账号'/>
                             </Form.Item>
 
                             <Form.Item name='password'
@@ -109,7 +161,8 @@ class LoginForm extends React.Component {
                                         <Input prefix={<LockOutlined className="site-form-item-icon" />} placeholder="验证码"/>
                                     </Col>
                                     <Col span={9}>
-                                        <Button type='danger' block>获取验证码</Button>
+                                        <Button type='danger' loading={code_button_loading}
+                                                block disabled={code_button_disabled} onClick={this.getCode}>{code_button_text}</Button>
                                     </Col>
                                 </Row>
                             </Form.Item>
@@ -134,6 +187,8 @@ class RegisterForm extends React.Component {
         this.onFinish = this.onFinish.bind(this);
         this.onFinishFailed = this.onFinishFailed.bind(this);
         this.onChangeFormType = this.onChangeFormType.bind(this);
+
+        this.onInputChange = this.onInputChange.bind(this);
     }
 
     onFinish(values) {
@@ -148,7 +203,14 @@ class RegisterForm extends React.Component {
         this.props.changeFormType('login');
     }
 
+    onInputChange() {
+
+    }
+
     render() {
+
+        const {username} = this.state.username;
+
         return (
             <div className="my-login-form">
                 <div>
@@ -162,7 +224,7 @@ class RegisterForm extends React.Component {
                             onFinish={this.onFinish}
                             onFinishFailed={this.onFinishFailed}>
                             <Form.Item name='username' rules={[{required: true, message:'Please Input Username'}]}>
-                                <Input prefix={<UserOutlined className="site-form-item-icon" />} placeholder='账号'/>
+                                <Input value={username} onChange={this.onInputChange} prefix={<UserOutlined className="site-form-item-icon" />} placeholder='账号'/>
                             </Form.Item>
 
                             <Form.Item name='password' rules={[{required: true, message:'Please Input Password'}]} hasFeedback>

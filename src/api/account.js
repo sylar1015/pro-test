@@ -11,3 +11,16 @@ export function Login(data) {
         //get params:{}
     });
 }
+
+/*
+* 获取验证码
+* */
+export function GetCode(data) {
+    return service.request({
+        url:'/getSms/',
+        method:'post',
+        data:data
+        //get params:{}
+    });
+}
+
