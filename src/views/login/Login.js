@@ -1,14 +1,16 @@
 import React from "react";
-
+import {withRouter} from "react-router-dom";
 //css
 import './login.scss'
 //antd
-import {Form, Input, Button, Row, Col, message} from "antd";
-import { UserOutlined, LockOutlined, PoweroffOutlined } from '@ant-design/icons'
+import {Form, Input, Button, Row, Col} from "antd";
+import { UserOutlined, LockOutlined } from '@ant-design/icons'
 //utils
 import {validate_password} from "../../utils/validate";
 //api
-import {Login, GetCode} from "../../api/account";
+import {Login} from "../../api/account";
+//local component
+import Code from '../../component/code/index';
 
 class LoginComponent extends React.Component {
 
@@ -23,6 +25,8 @@ class LoginComponent extends React.Component {
 
     changeFormType (formType) {
         this.setState({formType : formType});
+
+        //this.props.history.push('/index');
     }
 
     render() {
@@ -42,71 +46,27 @@ class LoginComponent extends React.Component {
 class LoginForm extends React.Component {
 
     constructor (props) {
+
         super(props);
 
-        this.code_button_text = ['获取验证码', '发送中', '60S', '重新获取'];
         this.state = {
             username:'',
-            code_button_click_disabled:true,
-            code_button_loading:false,
-            code_button_text: this.code_button_text[0]
         };
-
-
 
         this.onFinish = this.onFinish.bind(this);
-        this.onFinishFailed = this.onFinishFailed.bind(this);
         this.onChangeFormType = this.onChangeFormType.bind(this);
-
-        this.getCode = this.getCode.bind(this);
         this.onInputChange = this.onInputChange.bind(this);
-        this.countDown = this.countDown.bind(this);
-    }
-
-    getCode() {
-
-        if (this.state.code_button_click_disabled) {
-            return false;
-        }
-
-        this.setState({
-            code_button_text:this.code_button_text[1],
-            code_button_loading:true,
-        });
-
-        const payload = {
-            username: this.state.username,
-            module: 'login'
-        };
-
-        GetCode(payload).then(response => {
-
-            this.countDown();
-        }).catch(error => {
-            this.setState({
-                code_button_text:this.code_button_text[3],
-                code_button_loading:false,
-                code_button_click_disabled:false
-            });
-            console.log(error);
-        });
-    }
-
-    componentDidMount() {
-        //console.log(process.env.REACT_APP_API)
     }
 
     onFinish(values) {
         //console.log("onFinish", values);
         Login(values).then(response => {
-            console(response);
+
+            this.props.history.push('/index');
+
         }).catch(error => {
             console.log(error);
         });
-    }
-
-    onFinishFailed(err) {
-        console.log('Failed', err);
     }
 
     onChangeFormType() {
@@ -118,47 +78,12 @@ class LoginForm extends React.Component {
     * */
     onInputChange(e) {
         const value = e.target.value;
-        const disabled = !value;
-
-        this.setState({username:value, code_button_click_disabled:disabled});
-    }
-
-    /*
-    * 倒计时
-    * */
-    countDown() {
-
-        let sec  = 60;
-        let timer = null;
-
-        /*
-        * setInterval / clearInterval 不间断执行
-        * setTimeout / clearTimeout 只执行一次
-        *  */
-
-        this.setState({
-            code_button_text: `${sec}S`,
-            code_button_loading:false,
-            code_button_click_disabled:true
-        });
-
-        timer = setInterval(()=>{
-            sec -= 1;
-            this.setState({code_button_text: `${sec}S`});
-
-            if (sec == 0) {
-                clearInterval(timer);
-                this.setState({
-                    code_button_text: this.code_button_text[3],
-                    code_button_click_disabled: false
-                })
-            }
-        }, 1000)
+        this.setState({username:value});
     }
 
     render() {
 
-        const {username, code_button_loading, code_button_text} = this.state;
+        const {username} = this.state;
 
         return (
             <div className="my-login-form">
@@ -180,16 +105,6 @@ class LoginForm extends React.Component {
                                        rules={[
                                            {required: true, message:'Please Input Password'},
                                            {pattern: validate_password, message:'请输入6到20位数字+字母组合'}
-                                           /*
-                                           ({getFieldValue}) => ({
-                                               validator(rule, value) {
-                                                   if (value.length < 6) {
-                                                       return Promise.reject("密码不小于6位");
-                                                   }
-                                                   return Promise.resolve();
-                                               }
-                                           })
-                                            */
                                            ]}
                             >
                                 <Input.Password prefix={<LockOutlined className="site-form-item-icon" />} placeholder='密码' />
@@ -201,8 +116,7 @@ class LoginForm extends React.Component {
                                         <Input prefix={<LockOutlined className="site-form-item-icon" />} placeholder="验证码"/>
                                     </Col>
                                     <Col span={9}>
-                                        <Button type='danger' loading={code_button_loading}
-                                                block onClick={this.getCode}>{code_button_text}</Button>
+                                        <Code username={username} model='login' />
                                     </Col>
                                 </Row>
                             </Form.Item>
@@ -222,12 +136,12 @@ class RegisterForm extends React.Component {
 
     constructor (props) {
         super(props);
-        this.state = {};
+        this.state = {
+            username:''
+        };
 
         this.onFinish = this.onFinish.bind(this);
-        this.onFinishFailed = this.onFinishFailed.bind(this);
         this.onChangeFormType = this.onChangeFormType.bind(this);
-
         this.onInputChange = this.onInputChange.bind(this);
     }
 
@@ -235,21 +149,18 @@ class RegisterForm extends React.Component {
         console.log("onFinish", values);
     }
 
-    onFinishFailed(err) {
-        console.log('Failed', err);
-    }
-
     onChangeFormType() {
         this.props.changeFormType('login');
     }
 
-    onInputChange() {
-
+    onInputChange(e) {
+        let value = e.target.value;
+        this.setState({username:value});
     }
 
     render() {
 
-        const {username} = this.state.username;
+        const {username} = this.state;
 
         return (
             <div className="my-login-form">
@@ -267,7 +178,12 @@ class RegisterForm extends React.Component {
                                 <Input value={username} onChange={this.onInputChange} prefix={<UserOutlined className="site-form-item-icon" />} placeholder='账号'/>
                             </Form.Item>
 
-                            <Form.Item name='password' rules={[{required: true, message:'Please Input Password'}]} hasFeedback>
+                            <Form.Item name='password'
+                                       rules={[
+                                           {required: true, message:'Please Input Password'},
+                                           {pattern: validate_password, message:'请输入6到20位数字+字母组合'}
+                                       ]}
+                                       hasFeedback>
                                 <Input.Password prefix={<LockOutlined className="site-form-item-icon" />} placeholder='密码' />
                             </Form.Item>
 
@@ -293,7 +209,7 @@ class RegisterForm extends React.Component {
                                         <Input prefix={<LockOutlined className="site-form-item-icon" />} placeholder="验证码"/>
                                     </Col>
                                     <Col span={9}>
-                                        <Button type='danger' block>获取验证码</Button>
+                                        <Code username={username} model='register' />
                                     </Col>
                                 </Row>
                             </Form.Item>
@@ -309,4 +225,4 @@ class RegisterForm extends React.Component {
     }
 }
 
-export default LoginComponent;
+export default withRouter(LoginComponent);
