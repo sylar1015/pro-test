@@ -7,37 +7,22 @@ import {Menu} from "antd";
 import {DesktopOutlined, FileOutlined, PieChartOutlined, TeamOutlined, UserOutlined} from "@ant-design/icons";
 //router
 import router from "../../router";
-import {Link} from 'react-router-dom';
+import {Link, withRouter} from 'react-router-dom';
 
 const {SubMenu} = Menu;
 
 class ASide extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {};
+        this.state = {
+            open_keys:[],
+            selected_keys:[]
+        };
     }
-    /*
-    <Menu theme="dark" defaultSelectedKeys={['1']} mode="inline">
-                        <ASide />
-                    </Menu>
-<Menu.Item key="1" icon={<PieChartOutlined />}>
-Option 1
-</Menu.Item>
-<Menu.Item key="2" icon={<DesktopOutlined />}>
-Option 2
-</Menu.Item>
-<SubMenu key="sub1" icon={<UserOutlined />} title="User">
-    <Menu.Item key="3">Tom</Menu.Item>
-    <Menu.Item key="4">Bill</Menu.Item>
-    <Menu.Item key="5">Alex</Menu.Item>
-</SubMenu>
-<SubMenu key="sub2" icon={<TeamOutlined />} title="Team">
-    <Menu.Item key="6">Team 1</Menu.Item>
-<Menu.Item key="8">Team 2</Menu.Item>
-</SubMenu>
-<Menu.Item key="9" icon={<FileOutlined />} />
 
-     */
+    componentDidMount() {
+        console.log(this.props);
+    }
 
     renderSubMenu = ({title, key, children}) => {
         return (
@@ -61,9 +46,17 @@ Option 2
     };
 
     render() {
+
+        const {selected_keys, open_keys} = this.state;
+
         return (
             <Fragment>
-                <Menu theme="dark" defaultSelectedKeys={['1']} mode="inline">
+                <Menu theme="dark"
+                      /*
+                      selectedKeys={selected_keys}
+                      openKeys={open_keys}
+                       */
+                      mode="inline">
                     {router && router.map(item=>{
                             return item.children && item.children.length > 0
                                 ? this.renderSubMenu(item)
@@ -76,4 +69,4 @@ Option 2
     }
 }
 
-export default ASide;
+export default withRouter(ASide);
