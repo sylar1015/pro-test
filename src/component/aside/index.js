@@ -4,7 +4,7 @@ import React,{Fragment} from "react";
 import './index.css'
 //antd
 import {Menu} from "antd";
-import {DesktopOutlined, FileOutlined, PieChartOutlined, TeamOutlined, UserOutlined} from "@ant-design/icons";
+import {PieChartOutlined, UserOutlined} from "@ant-design/icons";
 //router
 import router from "../../router";
 import {Link, withRouter} from 'react-router-dom';
@@ -15,8 +15,8 @@ class ASide extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            open_keys:[],
-            selected_keys:[]
+            //open_keys:[],
+            //selected_keys:[]
         };
     }
 
@@ -47,7 +47,7 @@ class ASide extends React.Component {
 
     render() {
 
-        const {selected_keys, open_keys} = this.state;
+        //const {selected_keys, open_keys} = this.state;
 
         return (
             <Fragment>

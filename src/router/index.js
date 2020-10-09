@@ -1,4 +1,3 @@
-import {UserOutlined} from "@ant-design/icons";
 
 const router = [
     {

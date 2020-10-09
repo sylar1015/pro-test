@@ -3,14 +3,7 @@ import React from "react";
 //css
 import './index.css'
 //antd
-import { Layout, Menu, Breadcrumb } from 'antd';
-import {
-    DesktopOutlined,
-    PieChartOutlined,
-    FileOutlined,
-    TeamOutlined,
-    UserOutlined,
-} from '@ant-design/icons';
+import { Layout, Breadcrumb } from 'antd';
 //组件
 import ASide from '../../component/aside';
 import ContainerComponent from "../../component/container";
