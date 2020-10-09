@@ -18,7 +18,9 @@ class DepartmentListComponent extends React.Component {
     }
 
     onFinish(value) {
-        message(value);
+        message.info(value);
+
+        this.refs.form.resetFields();
     }
 
     render() {
@@ -27,7 +29,7 @@ class DepartmentListComponent extends React.Component {
 
         return (
             <Fragment>
-                <Form {...formLayout} onFinish={this.onFinish}>
+                <Form ref='form' {...formLayout} onFinish={this.onFinish}>
                     <Form.Item name='name' label="部门名称" rules={[{required:true, message:'非空'}]}>
                         <Input></Input>
                     </Form.Item>

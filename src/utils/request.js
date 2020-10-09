@@ -1,4 +1,5 @@
 import axios from 'axios';
+import {getToken} from '../utils/cookies';
 
 const service = axios.create(
     {
@@ -8,6 +9,8 @@ const service = axios.create(
 );
 
 service.interceptors.request.use(function (config) {
+
+        config.headers['token'] = getToken();
         return config;
     }, function (error) {
         return Promise.reject(error);
