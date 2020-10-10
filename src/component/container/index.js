@@ -2,8 +2,8 @@ import React from 'react';
 import {Switch} from 'react-router-dom'
 import PrivateRoute from "../privateRouter/Index";
 
-import UserListComponent,{UserAddComponent} from "../user";
-import DepartmentListComponent, {DepartmentAddComponent} from "../department";
+import UserListComponent,{UserAddComponent} from "@c/user";
+import DepartmentListComponent, {DepartmentAddComponent} from "@c/department";
 
 const files = require.context('../../views', true, /\.js$/);
 
