@@ -2,8 +2,12 @@
 import './index.css'
 //react
 import React, {Fragment} from 'react';
+//route
+import {Link} from 'react-router-dom';
 //antd
-import {Form, Input, Button, InputNumber, Switch, message, Table} from "antd";
+import {Form, Input, Button, InputNumber, Switch, message, Table, Modal} from "antd";
+//
+import MessageBox from "@c/mbox";
 
 export class DepartmentAddComponent extends React.Component {
 
@@ -11,12 +15,28 @@ export class DepartmentAddComponent extends React.Component {
         super(props);
         this.state = {
             formLayout : {
+                id:"",
                 labelCol:{span:2},
                 wrapperCol:{span:10}
             }
         };
 
         this.onFinish = this.onFinish.bind(this);
+
+
+    }
+
+    componentWillMount() {
+        if (this.props.location.state) {
+            this.setState({id:this.props.location.state.id});
+        }
+    }
+
+    componentDidMount() {
+
+        if (this.state.id) {
+            console.log('dept', this.state.id);
+        }
     }
 
     onFinish(value) {
@@ -85,7 +105,9 @@ class DepartmentListComponent extends React.Component {
                     render: (text, rowData) => {
                         return (
                             <div>
-                                <Button type="primary" onClick={()=>{this.onEditDept(rowData.id)}}>编辑</Button>
+                                <Button type="primary">
+                                    <Link to={{pathname:'/index/department/add', state:{id:rowData.id} }}>编辑</Link>
+                                </Button>
                                 <Button onClick={()=>this.onDelDept(rowData.id)}>删除</Button>
                             </div>
                         )
@@ -103,16 +125,25 @@ class DepartmentListComponent extends React.Component {
                 }
             ],
 
-            selectedRowKeys:[]
+            selectedRowKeys:[],
+            selectedKey:"",
         };
     }
+
+    onOk = () => {
+        message.info(this.state.selectedKey);
+        this.setState({visible:false});
+    };
 
     onEditDept = (id) => {
         console.log('edit', id)
     };
 
     onDelDept = (id) => {
-        console.log('delete', id);
+        this.setState({
+            visible:true,
+            selectedKey:id
+        })
     };
 
     onFinish = (value) => {
@@ -134,7 +165,7 @@ class DepartmentListComponent extends React.Component {
 
     render() {
 
-        const {columns, dataSource} = this.state;
+        const {columns, dataSource, visible} = this.state;
 
         const rowSelection = {
                 type: "checkbox",
@@ -159,6 +190,15 @@ class DepartmentListComponent extends React.Component {
                 >
 
                 </Table>
+
+                <Modal
+                    title="提示"
+                    visible={visible}
+                    onOk={this.onOk}
+                    onCancel={()=>{this.setState({visible:false})}}
+                >
+                    <p>确认删除?</p>
+                </Modal>
 
             </div>
         );
