@@ -5,9 +5,11 @@ import React, {Fragment} from 'react';
 //route
 import {Link} from 'react-router-dom';
 //antd
-import {Form, Input, Button, InputNumber, Switch, message, Table, Modal} from "antd";
+import {Form, Input, Button, InputNumber, Switch, message, Table} from "antd";
 //
-import MessageBox from "@c/mbox";
+import MessageBox,{ConfirmBox} from "@c/mbox";
+//
+import DepartmentTable from "@c/department/table";
 
 export class DepartmentAddComponent extends React.Component {
 
@@ -139,11 +141,13 @@ class DepartmentListComponent extends React.Component {
         console.log('edit', id)
     };
 
+    temp = ()=> {
+      console.log('tmp', this.state.selectedKey);
+    };
+
     onDelDept = (id) => {
-        this.setState({
-            visible:true,
-            selectedKey:id
-        })
+        this.setState({selectedKey:id});
+        ConfirmBox(this.temp);
     };
 
     onFinish = (value) => {
@@ -165,7 +169,7 @@ class DepartmentListComponent extends React.Component {
 
     render() {
 
-        const {columns, dataSource, visible} = this.state;
+        const {columns, dataSource} = this.state;
 
         const rowSelection = {
                 type: "checkbox",
@@ -191,14 +195,9 @@ class DepartmentListComponent extends React.Component {
 
                 </Table>
 
-                <Modal
-                    title="提示"
-                    visible={visible}
-                    onOk={this.onOk}
-                    onCancel={()=>{this.setState({visible:false})}}
-                >
-                    <p>确认删除?</p>
-                </Modal>
+                <MessageBox ref="messagebox" />
+
+                <DepartmentTable/>
 
             </div>
         );

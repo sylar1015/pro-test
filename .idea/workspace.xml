@@ -2,9 +2,17 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="74b0d923-f9f3-4329-a558-9ce3d2e9dd2a" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/src/component/mbox/index.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/component/department/table.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/store/action/department.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/store/reducer/department.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/store/reducer/job.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/config/webpack.config.js" beforeDir="false" afterPath="$PROJECT_DIR$/config/webpack.config.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/App.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/App.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/component/department/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/component/department/index.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/component/mbox/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/component/mbox/index.js" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
